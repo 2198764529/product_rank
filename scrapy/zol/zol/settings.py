@@ -12,18 +12,56 @@ BOT_NAME = "zol"
 SPIDER_MODULES = ["zol.spiders"]
 NEWSPIDER_MODULE = "zol.spiders"
 
-# Crawl responsibly by identifying yourself (and your website) on the user-agent
-USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36 Edg/130.0.0.0"
+# settings.py
 
-# Obey robots.txt rules
-ROBOTSTXT_OBEY = False
 
-REDIS_HOST = 'localhost'  # Redis 主机
-REDIS_PORT = 6379         # Redis 端口
-REDIS_DB = 0              # Redis 数据库索引
+# Redis 配置
+REDIS_URL = 'redis://localhost:6379'  # Redis 服务地址
+REDIS_DB = 0  # Redis 数据库
+REDIS_KEY = 'scrapy:items'  # 存储数据的 Redis 键
+
+# 启用自定义的 RedisPipeline
 ITEM_PIPELINES = {
-    'zol.pipelines.RedisPipeline': 300,
+   'zol.pipelines.RedisPipeline': 1,
 }
+
+# 其他设置
+# DUPEFILTER_CLASS = 'scrapy.dupefilters.RFPDupeFilter'  # 去重
+# SCHEDULER_PERSIST = True  # 保证任务不丢失
+
+# 只在使用SpiderQueue或者SpiderStack是有效的参数，指定爬虫关闭的最大间隔时间
+# SCHEDULER_IDLE_BEFORE_CLOSE = 10
+
+# 通过配置RedisPipeline将item写入key为 spider.name : items 的redis的list中，供后面的分布式处理item
+# 这个已经由 scrapy-redis 实现，不需要我们写代码
+
+
+# 指定redis数据库的连接参数
+# REDIS_PASS是我自己加上的redis连接密码（默认不做）
+REDIS_HOST = '127.0.0.1'
+REDIS_PORT = 6379
+# REDIS_PASS = 'redisP@ssw0rd'
+
+# settings.py
+
+# Redis 配置
+REDIS_URL = 'redis://localhost:6379'  # Redis 服务地址
+REDIS_DB = 0  # Redis 数据库
+REDIS_KEY = 'scrapy:items'  # 存储数据的 Redis 键
+
+# 启用自定义的 RedisPipeline
+ITEM_PIPELINES = {
+   'zol.pipelines.RedisPipeline': 1,
+}
+
+USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36'
+
+
+
+# 其他设置
+# DUPEFILTER_CLASS = 'scrapy.dupefilters.RFPDupeFilter'  # 去重
+# SCHEDULER = 'scrapy.schedulers.Scheduler'  # 调度器
+# SCHEDULER_PERSIST = True  # 保证任务不丢失
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
@@ -93,7 +131,10 @@ ITEM_PIPELINES = {
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = "scrapy.extensions.httpcache.FilesystemCacheStorage"
 
+
+
 # Set settings whose default value is deprecated to a future-proof value
 REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
+DOWNLOAD_DELAY = 2  # 每次请求之间等待 2 秒

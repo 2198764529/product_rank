@@ -16,33 +16,21 @@ class ZolPipeline:
 
 
 class RedisPipeline:
-    def __init__(self, host, port, db):
-        self.redis_host = host
-        self.redis_port = port
-        self.redis_db = db
+    def __init__(self, redis_url, redis_db, redis_key):
+        self.redis_url = redis_url
+        self.redis_db = redis_db
+        self.redis_key = redis_key
+        self.redis = redis.StrictRedis.from_url(redis_url, db=redis_db)
 
     @classmethod
-    def from_crawler(cls, crawler):
-        return cls(
-            host=crawler.settings.get('REDIS_HOST', 'localhost'),
-            port=crawler.settings.get('REDIS_PORT', 6379),
-            db=crawler.settings.get('REDIS_DB', 0),
-        )
-
-    def open_spider(self, spider):
-        # 在爬虫启动时建立 Redis 连接
-        self.redis_conn = redis.StrictRedis(
-            host=self.redis_host,
-            port=self.redis_port,
-            db=self.redis_db,
-            decode_responses=True  # 确保字符串不需要二次解码
-        )
-
-    def close_spider(self, spider):
-        # 在爬虫关闭时断开 Redis 连接
-        self.redis_conn.close()
+    def from_crawler(cls, crawler, *args, **kwargs):
+        # 从 Scrapy 设置中获取 Redis 配置
+        redis_url = crawler.settings.get('REDIS_URL')
+        redis_db = crawler.settings.get('REDIS_DB', 0)
+        redis_key = crawler.settings.get('REDIS_KEY', 'scrapy:items')
+        return cls(redis_url, redis_db, redis_key)
 
     def process_item(self, item, spider):
-        # 将 item 转换为 JSON 格式并存储到 Redis
-        self.redis_conn.rpush('scrapy_items', json.dumps(dict(item), ensure_ascii=False))
+        # 将每个抓取到的数据转换成 JSON 格式并存储到 Redis
+        self.redis.lpush(self.redis_key, json.dumps(item))
         return item
