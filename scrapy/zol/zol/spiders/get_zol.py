@@ -29,16 +29,18 @@ class getZOLSpider(scrapy.Spider):
     def parse_detail(self, response):
         """解析详情页"""
         # 示例:https://detail.zol.com.cn/2105/2104769/param.shtml
-        product_keys = set(response.xpath("//div[@class='detailed-parameters']/table//th//text()").extract())
         item = {}
+        item['品牌'] = response.xpath("//*[@id='_j_breadcrumb']//text()").extract_first()
+        item['url'] = response.url
+        item['img_url'] = response.xpath("//div[@class='goods-card__pic']/a/img/@src").extract_first()
+        item['id'] = response.url.split("/")[-2]
+        product_keys = set(response.xpath("//div[@class='detailed-parameters']/table//th//text()").extract())
         for k in product_keys:
             if k.startswith("\r\n"):
                 continue
             item[k] = response.xpath("//tr[th//*[text()='{}']]/td/span//text()".format(k)).extract()
+        if "产品型号" not in item:
+            item['产品型号'] = response.xpath("/html/body/div[5]/div[1]/a[4]/text()").extract_first()
 
-            "//div[@class='detailed-parameters']/table//th//text()"
-        item['品牌'] = response.xpath("//div[@class='detailed-parameters']/table//th//text()").extract_first()
-        item['url'] = response.url
-        item['id'] = response.url.split("/")[-2]
 
         yield item

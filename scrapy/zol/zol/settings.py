@@ -14,16 +14,16 @@ NEWSPIDER_MODULE = "zol.spiders"
 
 # settings.py
 
-
-# Redis 配置
-REDIS_URL = 'redis://localhost:6379'  # Redis 服务地址
-REDIS_DB = 0  # Redis 数据库
-REDIS_KEY = 'scrapy:items'  # 存储数据的 Redis 键
-
-# 启用自定义的 RedisPipeline
-ITEM_PIPELINES = {
-   'zol.pipelines.RedisPipeline': 1,
-}
+#
+# # Redis 配置
+# REDIS_URL = 'redis://localhost:6379'  # Redis 服务地址
+# REDIS_DB = 0  # Redis 数据库
+# REDIS_KEY = 'scrapy:items'  # 存储数据的 Redis 键
+#
+# # 启用自定义的 RedisPipeline
+# ITEM_PIPELINES = {
+#    'zol.pipelines.RedisPipeline': 1,
+# }
 
 # 其他设置
 # DUPEFILTER_CLASS = 'scrapy.dupefilters.RFPDupeFilter'  # 去重
@@ -38,26 +38,29 @@ ITEM_PIPELINES = {
 
 # 指定redis数据库的连接参数
 # REDIS_PASS是我自己加上的redis连接密码（默认不做）
-REDIS_HOST = '127.0.0.1'
-REDIS_PORT = 6379
+# REDIS_HOST = '127.0.0.1'
+# REDIS_PORT = 6379
 # REDIS_PASS = 'redisP@ssw0rd'
 
 # settings.py
-
-# Redis 配置
-REDIS_URL = 'redis://localhost:6379'  # Redis 服务地址
-REDIS_DB = 0  # Redis 数据库
-REDIS_KEY = 'scrapy:items'  # 存储数据的 Redis 键
-
-# 启用自定义的 RedisPipeline
-ITEM_PIPELINES = {
-   'zol.pipelines.RedisPipeline': 1,
-}
-
+#
+# # Redis 配置
+# REDIS_URL = 'redis://localhost:6379'  # Redis 服务地址
+# REDIS_DB = 0  # Redis 数据库
+# REDIS_KEY = 'scrapy:items'  # 存储数据的 Redis 键
+#
+# # 启用自定义的 RedisPipeline
+# ITEM_PIPELINES = {
+#    'zol.pipelines.RedisPipeline': 1,
+# }
+#
 USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36'
+#
 
-
-
+# myproject/settings.py
+FEEDS = {
+    'output.json': {'format': 'json', 'encoding': 'utf8', 'overwrite': True},
+}
 # 其他设置
 # DUPEFILTER_CLASS = 'scrapy.dupefilters.RFPDupeFilter'  # 去重
 # SCHEDULER = 'scrapy.schedulers.Scheduler'  # 调度器
@@ -137,4 +140,4 @@ USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
-DOWNLOAD_DELAY = 2  # 每次请求之间等待 2 秒
+DOWNLOAD_DELAY = 1.2  # 每次请求之间等待 2 秒
